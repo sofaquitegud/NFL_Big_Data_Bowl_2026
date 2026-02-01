@@ -4,103 +4,182 @@
 
 This project explores player-tracking data from the **NFL Big Data Bowl 2026 – Analytics competition**. The goal is to understand player behavior and game dynamics through **exploratory data analysis (EDA)** rather than predictive modeling.
 
-The analysis combines 18 weeks of input and output files into a single dataset to study player movement, speed distributions, and positional relationships. Using **Python (Pandas, NumPy, Matplotlib)**, the notebook investigates how attributes such as **speed, acceleration, and distance to the ball** relate to play outcomes.
+The analysis combines 18 weeks of input and output files into a single dataset to study player movement, speed distributions, and positional relationships. Using **Python (Pandas, NumPy, Matplotlib, Seaborn)**, the notebook investigates how attributes such as **speed, acceleration, and distance to the ball** relate to play outcomes.
 
 ---
 
-## Objectives
+## Dataset Summary
 
-* Load, combine, and clean weekly player-tracking datasets
-* Engineer new features (*distance_to_ball_land*, *distance_covered*)
-* Explore positional movement and speed characteristics
-* Visualize spatial and statistical patterns across player roles
+| Metric | Value |
+|--------|-------|
+| **Total Rows** | 4,880,579 |
+| **Rows with Future Position** | 560,426 |
+| **Columns** | 25 |
+| **Weeks** | 18 |
+| **Supplementary Data** | 18,009 plays, 41 columns |
+
+### Key Statistics
+
+| Feature | Mean | Std | Min | Max |
+|---------|------|-----|-----|-----|
+| Speed (yards/s) | 3.04 | 2.23 | 0.00 | 12.53 |
+| Acceleration (yards/s²) | 2.13 | 1.43 | 0.00 | 17.12 |
+| Distance to Ball Landing | 19.42 | 10.76 | 0.01 | 73.08 |
+| Displacement Distance | 11.01 | 6.65 | 0.01 | 54.64 |
 
 ---
 
-## Data Description
+## Players to Predict
 
-The combined dataset contains **560,426 entries** and **25 columns**, including:
+The competition focuses on predicting future positions for specific players. Here's the breakdown:
 
-* Game and play identifiers
-* Player attributes (position, role, side)
-* Tracking data (x, y, speed, acceleration, direction, orientation)
-* Ball landing coordinates
+**Total rows:** 1,303,440
 
-No missing values were found in the dataset.
+### By Position
+| Position | Count |
+|----------|-------|
+| CB | 371,504 |
+| WR | 238,910 |
+| FS | 149,236 |
+| SS | 121,294 |
+| ILB | 104,299 |
+| TE | 91,654 |
+
+### By Role
+| Role | Count |
+|------|-------|
+| Defensive Coverage | 906,526 |
+| Targeted Receiver | 396,914 |
 
 ---
 
 ## Key Findings
 
-* **Wide Receivers (WR)** reached the highest speeds and showed the widest range of movement.
-* **Linebackers** and **Defensive Ends** maintained lower, tighter speed ranges.
-* Most players stayed within **10–20 yards** of the ball landing point, showing tight clustering around play zones.
-* Faster players covered more ground, showing a strong link between **average speed** and **distance covered**.
-* **Player weight** was slightly negatively correlated with speed and acceleration.
-* Spatial visualizations revealed consistent pursuit and coverage structures across plays.
+### 1. Movement Patterns
+- **Wide Receivers (WR)** reached the highest speeds (median ~4.8 yards/s) with the widest range of movement
+- **Cornerbacks (CB)** show similar speed patterns due to man-to-man coverage
+- **Linebackers** and **Defensive Ends** maintain lower, tighter speed ranges
+
+### 2. Displacement Analysis
+- **Median displacement**: 9.7 yards
+- **90th percentile**: 20.14 yards
+- **95th percentile**: 23.85 yards
+- **99th percentile**: 31.04 yards
+
+### 3. Spatial Context
+- Most players stay within **10-20 yards** of the ball landing point
+- Distance to ball landing: mean 19.42 yards, right-skewed distribution
+
+### 4. Top Performers by Distance Covered
+| Player | Avg Speed | Max Speed | Total Distance |
+|--------|-----------|-----------|----------------|
+| Jordan Addison | 4.58 | 9.83 | 5,795.2 |
+| CeeDee Lamb | 4.31 | 9.43 | 5,417.9 |
+| Amon-Ra St. Brown | 4.43 | 9.45 | 5,370.6 |
+| K.J. Osborn | 4.33 | 9.51 | 5,133.8 |
+| Terry McLaurin | 4.44 | 9.97 | 5,106.5 |
 
 ---
 
 ## Visualizations
 
-The notebook includes:
+### Speed Distribution by Position
+![Speed by Position](images/speed_by_position.png)
 
-* Speed and acceleration distributions by position
-* Distance-to-ball and distance-covered distributions
-* Correlation heatmaps between performance variables
-* Scatter plots of speed versus distance covered
-* Player trajectory visualizations
+WR shows the highest median speed (~4.8 yards/s) with CB close behind. QBs have lower speeds as expected.
+
+### Player Speed and Acceleration Distributions
+![Speed and Acceleration](images/speed_acceleration.png)
+
+Speed distribution is bimodal (stationary vs moving players). Acceleration peaks around 2 yards/s².
+
+### Distance to Ball Landing
+![Distance to Ball](images/distance_to_ball.png)
+
+Right-skewed distribution with peak around 15 yards. Most players are within pursuit range.
+
+### Player Movement Trajectories
+![Player Movement](images/player_movement.png)
+
+Example play showing player trajectories converging toward the ball landing location (red X).
+
+### Displacement Analysis (Prediction Target)
+![Displacement](images/displacement_analysis.png)
+
+The actual prediction target - displacement from current to future position. Median ~9.7 yards with roughly circular distribution.
+
+---
+
+## Supplementary Data
+
+| Pass Result | Count |
+|-------------|-------|
+| Complete (C) | 12,470 |
+| Incomplete (I) | 5,106 |
+| Interception (IN) | 433 |
+
+### Top Routes
+| Route | Count |
+|-------|-------|
+| HITCH | 3,383 |
+| OUT | 2,886 |
+| FLAT | 2,490 |
+| CROSS | 1,957 |
+| GO | 1,776 |
 
 ---
 
 ## Tools and Libraries
 
-* **Python**: Pandas, NumPy, Matplotlib
+* **Python**: Pandas, NumPy, Matplotlib, Seaborn
 * **Jupyter Notebook** for exploration and visualization
+* **IPython Display** for styled DataFrame tables
 
 ---
 
 ## How to Run
 
 1. **Clone or download** this repository:
-
    ```bash
    git clone https://github.com/<your-username>/nfl-big-data-bowl-2026.git
    cd nfl-big-data-bowl-2026
    ```
 
 2. **Install dependencies**:
-
    ```bash
-   pip install pandas numpy matplotlib jupyter
+   pip install pandas numpy matplotlib seaborn jupyter
    ```
 
 3. **Prepare the data**:
-
-   * Place all weekly input and output CSV files in a `data/` directory.
-   * Ensure the folder structure matches the expected file paths in the notebook.
+   ```bash
+   kaggle competitions download -c nfl-big-data-bowl-2026-analytics -p data
+   unzip -q data/nfl-big-data-bowl-2026-analytics.zip -d data
+   ```
+   The notebook expects data under: `data/114239_nfl_competition_files_published_analytics_final/train`
 
 4. **Open and run the notebook**:
-
    ```bash
    jupyter notebook nfl-big-data-bowl-2026-analytics-comp-syafiq.ipynb
    ```
-
-5. **Explore the results**:
-   The notebook will generate visualizations and descriptive statistics summarizing player movement, speed, and game structure.
 
 ---
 
 ## Future Work
 
-* Expand the analysis to include **temporal features**, such as player acceleration over time or reaction speed after ball snap.
-* Apply **clustering techniques** to group players by movement patterns or tactical roles.
-* Investigate **team-level strategies** using aggregated player data.
-* Explore **predictive modeling** to estimate play outcomes based on initial positioning and motion variables.
-* Integrate **field position heatmaps** to visualize space control and formation tendencies.
+* Apply **clustering techniques** to group players by movement patterns
+* Investigate **team-level strategies** using aggregated player data
+* Build **predictive models** using displacement as target
+* Integrate **field position heatmaps** for space control visualization
+* Explore **route-specific movement patterns**
 
 ---
 
 ## Conclusion
 
-This project translates raw NFL tracking data into measurable insights about player performance and spatial structure. It shows how exploratory analysis can uncover the rhythm, structure, and tactical behavior embedded in high-resolution sports data.
+This project translates raw NFL tracking data into measurable insights about player performance and spatial structure. Key findings include:
+
+- **Position matters**: WR/CB show highest speeds and displacement
+- **Spatial context is critical**: Distance to ball landing strongly influences movement
+- **Displacement is predictable**: Median 9.7 yards with consistent patterns
+
+The analysis provides a solid foundation for developing predictive models for the NFL Big Data Bowl 2026 competition.
